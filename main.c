@@ -7,8 +7,7 @@
  */
 void displayPrompt(void)
 {
-	printf("$ ");
-	fflush(stdout);
+	printf("shell$ ");
 }
 
 /**
@@ -18,11 +17,8 @@ void displayPrompt(void)
  */
 int main(void)
 {
-	char command[MAX_INPUT_LENGTH];
 	char input[MAX_INPUT_LENGTH];
-	char *args[MAX_ARG_COUNT];
-	int len, argc;
-	char *exeP = findExe(command);
+	size_t len;
 
 	while (1)
 	{
@@ -36,25 +32,16 @@ int main(void)
 		len = strlen(input);
 		if (len > 0 && input[len - 1] == '\n')
 			input[len - 1] = '\0';
-		checkInput(input, command, args, &argc);
 
-		if (strcmp(command, "exit") == 0)
+		if (strcmp(input, "exit") == 0)
 			break;
-		if (strcmp(command, "env") == 0)
+		else if (strcmp(input, "env") == 0)
 		{
-			printEnv(environ);
-			continue;
-		}
-		if (exeP != NULL)
-		{
-			executeCommand(exeP, args);
-			freeArgs(args, argc - 1);
-			free(exeP);
+			exe_env();
 		}
 		else
 		{
-			printf("Command not found: %s\n", command);
-			freeArgs(args, argc - 1);
+			exe_command(input);
 		}
 	}
 	return (0);
